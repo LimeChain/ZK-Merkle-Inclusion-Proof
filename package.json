@@ -1,0 +1,28 @@
+{
+  "name": "test-pil",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec --max-old-space-size=4000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "test-pil"
+  },
+  "author": "Ivan Kyuchukov",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.11",
+    "chai": "^4.3.7",
+    "circom_tester": "^0.0.19",
+    "circomlib": "^2.0.5",
+    "ethers": "^5.7.2",
+    "keccak256": "^1.0.6",
+    "keccak256-circom": "git+https://github.com/vocdoni/keccak256-circom",
+    "merkletreejs": "^0.3.10",
+    "mocha": "^10.2.0",
+    "pil-stark": "^0.0.56"
+  }
+}
