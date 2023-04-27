@@ -5,6 +5,7 @@ const wasm_tester = require("circom_tester").wasm;
 const utils = require("./utils");
 const keccak256 = require("keccak256");
 const merkle = require("merkletreejs");
+const fs = require("fs");
 
 describe("Restore Merkle Root tests", function () {
     this.timeout(100000);
@@ -39,7 +40,11 @@ describe("Restore Merkle Root tests", function () {
 
 		// get proof
 		const proof = tree.getProof(leaf); console.log('proof', proof);
-		const proofBits = proof.map(i => utils.bytesToBits((i.data)));
+		const proofBits = proof.map(i => utils.bytesToBits((i.data))); console.log('proofBits', proofBits);
+
+		// export input params
+		const inputJson = JSON.stringify({ leaf: leafBits, proof: proofBits});
+		fs.writeFileSync("src/circuits/RestoreMerkleRoot/input.json", inputJson);
 
 		// calculate witness
 		const witness = await cir.calculateWitness({ "leaf": leafBits, "proof": proofBits }, true);

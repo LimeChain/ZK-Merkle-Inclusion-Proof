@@ -1,7 +1,7 @@
 pragma circom 2.0.0;
 
-include "./keccak.circom";
-include "./Concat2Arrays.circom";
+include "../keccak.circom";
+include "../Concat2Arrays.circom";
 
 template RestoreMerkleRoot(proofLength, index, nBits) {
     signal input leaf[nBits];
