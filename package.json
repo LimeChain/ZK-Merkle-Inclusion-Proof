@@ -1,5 +1,5 @@
 {
-  "name": "test-pil",
+  "name": "test-circom",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "test-pil"
+    "url": "test-circom"
   },
   "author": "Ivan Kyuchukov",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.11",
@@ -23,6 +23,6 @@
     "keccak256-circom": "git+https://github.com/vocdoni/keccak256-circom",
     "merkletreejs": "^0.3.10",
     "mocha": "^10.2.0",
-    "pil-stark": "^0.0.56"
+    "bignumber.js": "^9.1.1"
   }
 }

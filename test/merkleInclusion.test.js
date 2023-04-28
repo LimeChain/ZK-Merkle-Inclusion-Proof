@@ -12,7 +12,7 @@ describe("Restore Merkle Root tests", function () {
 
     let cir;
     before(async () => {
-        cir = await wasm_tester("src/circuits/RestoreMerkleRoot.circom");
+        cir = await wasm_tester("src/circuits/RestoreMerkleRoot/RestoreMerkleRoot.circom");
         await cir.loadConstraints();
         console.log("n_constraints", cir.constraints.length);
     });
@@ -23,38 +23,32 @@ describe("Restore Merkle Root tests", function () {
 		const treeElementsNum = 8;
 		const treeElements = [];
 		for (let i = 0; i < treeElementsNum; i++) {
-			const str = "hello" + i;
-			const hex = ethers.utils.formatBytes32String(str);
+			const elementValue = i;
+			const hex = ethers.utils.formatBytes32String(elementValue);
 			treeElements[i] = ethers.utils.keccak256(hex);
 		}
-		console.log(treeElements.map((val, idx) => { return val + " " + "hello" + idx }))
+		console.log(treeElements.map((val, idx) => { return val + " " + idx }))
 		
 		const tree = new merkle.MerkleTree(treeElements, keccak256); console.log('tree', tree.toString());
-		const root = tree.getRoot().toString('hex'); console.log('root', root);
+		const rootBytes = tree.getRoot(); console.log('rootBytes', rootBytes);
+		const rootHex = rootBytes.toString('hex'); console.log('rootHex', rootHex);
+		const rootBigInt = ethers.BigNumber.from("0x" + rootHex).toString(); console.log('rootBigInt', rootBigInt);
 
 		// get leaf
 		const leafIndex = 2;
 		const leaf = treeElements[leafIndex]; console.log('leaf', leaf.toString());
-		const leafBytes = ethers.utils.arrayify(leaf); console.log('leafBytes', leafBytes);
-		const leafBits = utils.bytesToBits(leafBytes); console.log('leafBits', leafBits);
+		const leafBigInt = ethers.BigNumber.from(leaf).toString(); console.log('leafBigInt', leafBigInt);
 
 		// get proof
 		const proof = tree.getProof(leaf); console.log('proof', proof);
 		const proofBits = proof.map(i => utils.bytesToBits((i.data))); console.log('proofBits', proofBits);
 
-		// export input params
-		const inputJson = JSON.stringify({ leaf: leafBits, proof: proofBits});
-		fs.writeFileSync("src/circuits/RestoreMerkleRoot/input.json", inputJson);
-
 		// calculate witness
-		const witness = await cir.calculateWitness({ "leaf": leafBits, "proof": proofBits }, true);
-		const witnessBits = witness.slice(1, 1 + (32*8));
-		const witnessBytes = utils.bitsToBytes(witnessBits);
-		const witnessHex = ethers.utils.hexlify(witnessBytes);
+		const circomParams = { "leaf": leafBigInt, "root": rootBigInt, "proof": proofBits};
+		await cir.calculateWitness(circomParams, true);
 
-		console.log('witnessHex', witnessHex)
-		console.log('expectedRoot', "0x" + root);
-		assert.equal(witnessHex, "0x" + root);
+		// export input params
+		// const inputJson = JSON.stringify(circomParams);
+		// fs.writeFileSync("src/circuits/RestoreMerkleRoot/input.json", inputJson);
     });
-
 });
